@@ -52,8 +52,16 @@ restaurant <- add_osm_feature(opq = q0, key = 'amenity', value = "restaurant") %
 restaurant.sf <- st_geometry(restaurant$osm_points) %>%
   st_transform(4326) %>%
   st_sf() %>%
-  cbind(., restaurant$osm_points$amenity) %>%
-  rename(NAME = restaurant.osm_points.amenity)
+  cbind(., restaurant$osm_points$name) %>%
+  cbind(., restaurant$osm_points$osm_id) %>%
+  cbind(., restaurant$osm_points$addr.street) %>%
+  cbind(., restaurant$osm_points$addr.postcode) %>%
+  cbind(., restaurant$osm_points$addr.city) %>%
+  cbind(., restaurant$osm_points$addr.state) %>%
+  cbind(., restaurant$osm_points$cuisine)
+
+# Remove "restaurant.osm_points." string from column names
+colnames(restaurant.sf) <- gsub("restaurant.osm_points.","",colnames(restaurant.sf))
 
 # Add the features for Philadelphia County
 # You can use this to clip things if it's necessary
